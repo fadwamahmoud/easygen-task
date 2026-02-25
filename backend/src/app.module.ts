@@ -11,6 +11,9 @@ import { AuthModule } from './auth/auth.module';
     AppLoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      // In tests, don't load .env files at all (prevents surprises across workers)
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
+      envFilePath: process.env.NODE_ENV === 'test' ? undefined : '.env',
       validate: validateEnv,
     }),
     MongooseModule.forRootAsync({
@@ -23,4 +26,4 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
