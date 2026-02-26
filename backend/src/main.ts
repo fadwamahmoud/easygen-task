@@ -4,11 +4,23 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
+  const swagConfig = new DocumentBuilder()
+    .setTitle('Auth API')
+    .setDescription('Authentication module API documentation')
+    .setVersion('1.0')
+    .addBearerAuth() 
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swagConfig);
+  SwaggerModule.setup('docs', app, document);
+
 
   app.useLogger(app.get(Logger));
 
