@@ -13,18 +13,12 @@ describe('Auth E2E', () => {
     beforeAll(async () => {
         //  in memory mongo
         console.log('Starting MongoMemoryServer...');
-        process.env.NODE_ENV = 'test';
-        process.env.JWT_ACCESS_SECRET = 'super_secret_test_key_123456';
-        process.env.JWT_ACCESS_TTL = '15m';
-        process.env.CORS_ORIGIN = 'http://localhost:5173';
+       
         mongod = await MongoMemoryServer.create();
+        process.env.MONGO_URI = mongod.getUri();
         console.log('MongoMemoryServer started');
 
-        process.env.MONGO_URI = mongod.getUri();
-        process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'super_secret_test_key_123456';
-        process.env.JWT_ACCESS_TTL = process.env.JWT_ACCESS_TTL || '15m';
-        process.env.CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
-        process.env.NODE_ENV = 'test';
+      
 
         console.log('Compiling testing module...');
         const moduleRef = await Test.createTestingModule({
