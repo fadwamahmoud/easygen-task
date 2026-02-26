@@ -16,7 +16,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_ACCESS_SECRET', { infer: true }),
         // should be in seconds ie number
-        signOptions: { expiresIn: config.get<number>('JWT_ACCESS_TTL', { infer: true }) ?? '15m' },
+        signOptions: {
+          expiresIn: config.get('JWT_ACCESS_TTL') ?? '15m',
+        },
       }),
     }),
   ],

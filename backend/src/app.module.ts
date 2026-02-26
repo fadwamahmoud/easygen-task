@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
-
 @Module({
   imports: [
     AppLoggerModule,
@@ -19,11 +18,11 @@ import { APP_GUARD } from '@nestjs/core';
       envFilePath: process.env.NODE_ENV === 'test' ? undefined : '.env',
       validate: validateEnv,
     }),
-    // global throttling 
+    // global throttling
     ThrottlerModule.forRoot([
       {
         ttl: 60_000, // 60 seconds
-        limit: 20,   // 20 requests per minute per ip
+        limit: 20, // 20 requests per minute per ip
       },
     ]),
     MongooseModule.forRootAsync({
@@ -35,9 +34,11 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     AuthModule,
   ],
-  providers:[{
-    provide: APP_GUARD,
-    useClass: ThrottlerGuard
-  }]
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

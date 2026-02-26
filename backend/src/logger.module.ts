@@ -12,7 +12,7 @@ import { LoggerModule } from 'nestjs-pino';
                 options: { singleLine: true, colorize: true },
               }
             : undefined,
-        redact: ['req.headers.authorization'], 
+        redact: ['req.headers.authorization'],
       },
     }),
   ],

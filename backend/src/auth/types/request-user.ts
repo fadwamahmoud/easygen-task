@@ -1,5 +1,5 @@
 export type RequestUser = {
-    id: string;
-    email: string;
-    name: string;
-  };
+  id: string;
+  email: string;
+  name: string;
+};

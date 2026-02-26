@@ -11,10 +11,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     config: ConfigService,
     private readonly usersService: UsersService,
   ) {
+    //passport-jwt’s Strategy options require a definite string
+    //  (or a provider callback like secretOrKeyProvider). TypeScript is rejecting passing undefined into super(...).
+    //  config.get() can still return undefined at type level
+    //  getOrThrow returns a non optional value (or throws at startup)
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('JWT_ACCESS_SECRET', { infer: true }),
+      secretOrKey: config.getOrThrow<string>('JWT_ACCESS_SECRET'),
     });
   }
 
