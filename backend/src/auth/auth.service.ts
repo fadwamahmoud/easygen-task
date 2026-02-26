@@ -10,20 +10,27 @@ import { SigninDto } from './dto/signin.dto';
 import { JwtPayload } from './types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 import { MongoServerError } from 'mongodb';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+    private readonly logger : PinoLogger
+    
+  ) {
+    this.logger.setContext(AuthService.name)
+  }
 
   async signup(dto: SignupDto) {
     const email = dto.email.toLowerCase().trim();
 
     const existing = await this.usersService.findByEmail(email);
+    this.logger.info({ email }, 'Signup attempt');
     if (existing) {
       //application level duplicate check
+      this.logger.warn({ email }, 'Signup failed: email already in use');
       throw new ConflictException('Email already in use');
     }
 
@@ -34,6 +41,7 @@ export class AuthService {
         name: dto.name.trim(),
         passwordHash,
       });
+      this.logger.info({ userId: user._id.toString(), email }, 'Signup success');
 
       return {
         id: user._id.toString(),
@@ -50,15 +58,19 @@ export class AuthService {
     const email = dto.email.toLowerCase().trim();
 
     const user = await this.usersService.findByEmail(email);
+    this.logger.info({ email }, 'Signin attempt');
     if (!user) {
-      // Don't leak if email exists
+      this.logger.warn({ email }, 'Signin failed: invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    
+    const ok = await argon2.verify(user.passwordHash, dto.password);
+    if (!ok) {
+      this.logger.warn({ email, userId: user._id.toString() }, 'Signin failed: invalid credentials');
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const ok = await argon2.verify(user.passwordHash, dto.password);
-    if (!ok) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    this.logger.info({ email, userId: user._id.toString() }, 'Signin success');
 
     const payload: JwtPayload = {
       sub: user._id.toString(),
