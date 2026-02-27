@@ -32,10 +32,8 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
-  
     (argon2.hash as unknown as jest.Mock).mockReset();
     (argon2.verify as unknown as jest.Mock).mockReset();
-  
 
     usersServiceMock.findByEmail.mockReset();
     usersServiceMock.create.mockReset();
@@ -70,7 +68,9 @@ describe('AuthService', () => {
         password: 'Passw0rd!',
       });
 
-      expect(usersServiceMock.findByEmail).toHaveBeenCalledWith('test@example.com');
+      expect(usersServiceMock.findByEmail).toHaveBeenCalledWith(
+        'test@example.com',
+      );
       expect(argon2.hash).toHaveBeenCalledWith('Passw0rd!');
       expect(usersServiceMock.create).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -99,8 +99,6 @@ describe('AuthService', () => {
       expect(usersServiceMock.create).not.toHaveBeenCalled();
       expect(argon2.hash).not.toHaveBeenCalled();
     });
-
-    
   });
 
   describe('signin', () => {
@@ -119,7 +117,9 @@ describe('AuthService', () => {
         password: 'Passw0rd!',
       });
 
-      expect(usersServiceMock.findByEmail).toHaveBeenCalledWith('test@example.com');
+      expect(usersServiceMock.findByEmail).toHaveBeenCalledWith(
+        'test@example.com',
+      );
       expect(argon2.verify).toHaveBeenCalledWith('hashed', 'Passw0rd!');
       expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
         sub: 'u1',

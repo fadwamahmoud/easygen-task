@@ -35,7 +35,9 @@ describe('UsersService', () => {
 
     await service.findByEmail('TEST@Example.com');
 
-    expect(modelMock.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
+    expect(modelMock.findOne).toHaveBeenCalledWith({
+      email: 'test@example.com',
+    });
     expect(exec).toHaveBeenCalled();
   });
 

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { SigninDto } from './dto/signin.dto';
+import { SignupDto } from './dto/signup.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -33,18 +35,26 @@ describe('AuthController', () => {
       name: 'Tester',
     });
 
-    const dto = { email: 'test@example.com', name: 'Tester', password: 'Passw0rd!' };
-    const res = await controller.signup(dto as any);
+    const dto = {
+      email: 'test@example.com',
+      name: 'Tester',
+      password: 'Passw0rd!',
+    };
+    const res = await controller.signup(dto as SignupDto);
 
     expect(authServiceMock.signup).toHaveBeenCalledWith(dto);
-    expect(res).toEqual({ id: 'u1', email: 'test@example.com', name: 'Tester' });
+    expect(res).toEqual({
+      id: 'u1',
+      email: 'test@example.com',
+      name: 'Tester',
+    });
   });
 
   it('signin calls AuthService.signin', async () => {
     authServiceMock.signin.mockResolvedValue({ accessToken: 'jwt' });
 
     const dto = { email: 'test@example.com', password: 'Passw0rd!' };
-    const res = await controller.signin(dto as any);
+    const res = await controller.signin(dto as SigninDto);
 
     expect(authServiceMock.signin).toHaveBeenCalledWith(dto);
     expect(res).toEqual({ accessToken: 'jwt' });

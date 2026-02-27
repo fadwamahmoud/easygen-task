@@ -17,10 +17,9 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly logger: PinoLogger
-
+    private readonly logger: PinoLogger,
   ) {
-    this.logger.setContext(AuthService.name)
+    this.logger.setContext(AuthService.name);
   }
 
   async signup(dto: SignupDto) {
@@ -41,7 +40,10 @@ export class AuthService {
         name: dto.name.trim(),
         passwordHash,
       });
-      this.logger.info({ userId: user._id.toString(), email }, 'Signup success');
+      this.logger.info(
+        { userId: user._id.toString(), email },
+        'Signup success',
+      );
 
       return {
         id: user._id.toString(),
@@ -50,7 +52,6 @@ export class AuthService {
       };
     } catch (err: unknown) {
       if (err instanceof MongoServerError && err.code && err.code === 11000)
-
         throw new ConflictException('Email already in use');
       throw err;
     }
@@ -67,7 +68,10 @@ export class AuthService {
 
     const ok = await argon2.verify(user.passwordHash, dto.password);
     if (!ok) {
-      this.logger.warn({ email, userId: user._id.toString() }, 'Signin failed: invalid credentials');
+      this.logger.warn(
+        { email, userId: user._id.toString() },
+        'Signin failed: invalid credentials',
+      );
       throw new UnauthorizedException('Invalid credentials');
     }
 

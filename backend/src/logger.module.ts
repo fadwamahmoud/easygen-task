@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { LoggerModule } from 'nestjs-pino';
+import type { IncomingMessage, ServerResponse } from 'http';
+import type { Request } from 'express';
 
 @Module({
   imports: [
@@ -9,10 +11,10 @@ import { LoggerModule } from 'nestjs-pino';
         genReqId: (req, res) => {
           const headerId = req.headers['x-request-id'];
           const id =
-            (typeof headerId === 'string' && headerId.length > 0)
+            typeof headerId === 'string' && headerId.length > 0
               ? headerId
               : randomUUID();
-        
+
           // keep header consistent too
           res.setHeader('x-request-id', id);
           return id;
@@ -21,9 +23,13 @@ import { LoggerModule } from 'nestjs-pino';
         transport:
           process.env.NODE_ENV !== 'production'
             ? {
-              target: 'pino-pretty',
-              options: { singleLine: true, colorize: true, translateTime: 'SYS:standard' },
-            }
+                target: 'pino-pretty',
+                options: {
+                  singleLine: true,
+                  colorize: true,
+                  translateTime: 'SYS:standard',
+                },
+              }
             : undefined,
         redact: [
           'req.headers.authorization',
@@ -33,15 +39,21 @@ import { LoggerModule } from 'nestjs-pino';
           'res.headers["set-cookie"]',
         ],
         serializers: {
-          req(req) {
+          req(
+            req: IncomingMessage & Partial<Request> & { id?: string | number },
+          ) {
             return {
               id: req.id,
               method: req.method,
               url: req.url,
-              remoteAddress: req.remoteAddress,
+              remoteAddress:
+                // express sets req.ip; node has socket/remoteAddress
+                (req as Partial<Request>).ip ??
+                req.socket?.remoteAddress ??
+                undefined,
             };
           },
-          res(res) {
+          res(res: ServerResponse & { statusCode?: number }) {
             return { statusCode: res.statusCode };
           },
         },
@@ -49,4 +61,4 @@ import { LoggerModule } from 'nestjs-pino';
     }),
   ],
 })
-export class AppLoggerModule { }
+export class AppLoggerModule {}
