@@ -4,5 +4,5 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": { "^.+\\.(t|j)s$": "ts-jest" },
-  "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"]
+  "setupFiles": ["<rootDir>/jest.setup.ts"]
 }

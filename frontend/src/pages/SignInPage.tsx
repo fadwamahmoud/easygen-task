@@ -49,7 +49,7 @@ export default function SignInPage() {
               type="email"
               autoComplete="email"
               {...register('email')}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -57,7 +57,7 @@ export default function SignInPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">Password</label>
+            <label className="block  text-sm mb-1">Password</label>
             <input
               type="password"
               autoComplete="current-password"
