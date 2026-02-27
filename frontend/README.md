@@ -1,73 +1,177 @@
-# React + TypeScript + Vite
+# Fullstack Auth Module (React + NestJS + MongoDB)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This project implements a production-ready authentication module with a React frontend and a NestJS backend.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+It supports:
 
-## React Compiler
+* User signup with validation
+* User signin with JWT authentication
+* Protected routes
+* Secure password hashing
+* API documentation via Swagger
+* Rate limiting and structured logging
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* React (Vite + TypeScript)
+* React Router
+* React Hook Form + Zod
+* Tailwind CSS
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* NestJS (TypeScript)
+* MongoDB (Mongoose)
+* JWT (Authentication)
+* Argon2 (Password hashing)
+* Swagger (API documentation)
+* Pino (Structured logging)
+* Throttler (Rate limiting)
+
+---
+
+## Architecture
+
+* Frontend and backend are separated for clarity and scalability.
+* Backend exposes a REST API consumed by the frontend.
+* Authentication is stateless using JWT.
+* Validation is shared conceptually between frontend (Zod) and backend (class-validator + custom logic).
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd easygen-task
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 2. Start MongoDB (Docker)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker compose up -d
 ```
+
+---
+
+### 3. Run Backend
+
+```bash
+cd backend
+cp .env.example .env
+npm install
+npm run start:dev
+```
+
+Backend runs at:
+
+```
+http://localhost:3001
+```
+
+---
+
+### 4. Run Frontend
+
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Frontend runs at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## API Documentation
+
+Swagger is available at:
+
+```
+http://localhost:3001/docs
+```
+
+You can:
+
+1. Sign up a user
+2. Sign in
+3. Copy the JWT token
+4. Authorize via Swagger
+5. Call protected endpoints
+
+---
+
+## Authentication Flow
+
+1. User signs up → password is hashed with Argon2
+2. User signs in → receives JWT access token
+3. Token is stored in localStorage (frontend)
+4. Protected routes call `/auth/me` to validate session
+5. Invalid/expired tokens trigger logout
+
+---
+
+## Security Considerations
+
+* Passwords are hashed using Argon2
+* Sensitive fields are redacted from logs
+* Rate limiting is applied to authentication endpoints
+* JWT expiration is enforced
+* Input validation is enforced on both frontend and backend
+
+---
+
+## Testing
+
+### Run backend tests
+
+```bash
+cd backend
+npm run test
+npm run test:e2e
+```
+
+* E2E tests use an in-memory MongoDB instance
+* Covers signup, signin, and protected routes
+
+---
+
+## Logging
+
+* Structured logging using Pino
+* Request IDs added for traceability
+* Auth events (success/failure) are logged safely
+
+---
+
+## CI
+
+GitHub Actions pipeline runs:
+
+* Linting
+* Unit tests
+* E2E tests
+* Frontend build
+
+---
+
+## Possible Improvements
+
+* Refresh token implementation
+* HTTP-only cookie authentication
+* Deployment (Dockerized full stack)
