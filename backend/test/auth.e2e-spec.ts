@@ -12,22 +12,17 @@ describe('Auth E2E', () => {
 
   beforeAll(async () => {
     //  in memory mongo
-    console.log('Starting MongoMemoryServer...');
+
 
     mongod = await MongoMemoryServer.create();
     process.env.MONGO_URI = mongod.getUri();
-    console.log('MongoMemoryServer started');
 
-    console.log('Compiling testing module...');
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    console.log('Testing module compiled');
 
     app = moduleRef.createNestApplication();
-    console.log('Initializing Nest app...');
     await app.init();
-    console.log('Nest app initialized');
   });
 
   afterAll(async () => {
