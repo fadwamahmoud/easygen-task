@@ -10,9 +10,6 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 
   const [status, setStatus] = useState<"checking" | "ok" | "fail">("checking");
 
-  if (!token) {
-    setStatus("fail");
-  }
 
   useEffect(() => {
     let cancelled = false;
