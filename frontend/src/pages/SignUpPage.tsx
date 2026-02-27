@@ -31,7 +31,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h1 className="text-2xl text-black font-bold mb-2">Create account</h1>
+        <h1 className="text-2xl font-bold mb-2">Create account</h1>
         <p className="text-gray-500 mb-6">Sign up to access the application.</p>
 
         {serverError && (
@@ -47,7 +47,7 @@ export default function SignUpPage() {
             <input
               type="email"
               {...register("email")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -58,11 +58,11 @@ export default function SignUpPage() {
 
           {/* Name */}
           <div>
-            <label className="block text-black  text-sm mb-1">Name</label>
+            <label className="block  text-sm mb-1">Name</label>
             <input
               type="text"
               {...register("name")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -71,11 +71,11 @@ export default function SignUpPage() {
 
           {/* Password */}
           <div>
-            <label className="block text-black  text-sm mb-1">Password</label>
+            <label className="block  text-sm mb-1">Password</label>
             <input
               type="password"
               {...register("password")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
